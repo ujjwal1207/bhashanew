@@ -37,9 +37,11 @@ app.use(compression({
 
 // -------- Static Audio Serving -------- //
 
+// Create audio directory if it doesn't exist
 if (!fs.existsSync(AUDIO_DIR)) {
-  console.error(`❌ ${AUDIO_DIR} directory not found`);
-  process.exit(1);
+  console.warn(`⚠️  ${AUDIO_DIR} directory not found. Creating it...`);
+  fs.mkdirSync(AUDIO_DIR, { recursive: true });
+  console.log(`✅ Created ${AUDIO_DIR} directory`);
 }
 
 app.use('/data/audio', express.static(AUDIO_DIR));
