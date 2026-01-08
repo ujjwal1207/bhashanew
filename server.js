@@ -48,20 +48,56 @@ app.use('/data/audio', express.static(AUDIO_DIR));
 
 // -------- Serve Index HTML -------- //
 
-// Serve React app in production
+// Serve React app in production (if public folder exists)
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'public')));
+  const publicDir = path.join(__dirname, 'public');
   
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
+  if (fs.existsSync(publicDir)) {
+    app.use(express.static(publicDir));
+    
+    app.get('/', (req, res) => {
+      res.sendFile(path.join(publicDir, 'index.html'));
+    });
+  } else {
+    // API-only mode
+    app.get('/', (req, res) => {
+      res.json({
+        message: 'RSML Speech Annotator API',
+        version: '1.0.0',
+        status: 'running',
+        endpoints: {
+          auth: {
+            register: 'POST /api/auth/register',
+            login: 'POST /api/auth/login',
+            me: 'GET /api/auth/me (protected)'
+          },
+          admin: {
+            pendingUsers: 'GET /api/auth/pending-users (admin)',
+            approve: 'PUT /api/auth/approve/:userId (admin)',
+            reject: 'DELETE /api/auth/reject/:userId (admin)'
+          },
+          data: {
+            batches: 'GET /api/batches (protected)',
+            files: 'GET /api/batch/:batch/files (protected)',
+            segments: 'GET /api/batch/:batch/file/:file (protected)',
+            save: 'POST /api/save (protected)'
+          }
+        },
+        docs: 'https://github.com/yourusername/bhashanew'
+      });
+    });
+  }
 } else {
-  // Serve old index.html in development
+  // Development mode
   app.get('/', (req, res) => {
     const indexPath = path.join(__dirname, 'index.html');
     
     if (!fs.existsSync(indexPath)) {
-      return res.status(404).json({ error: 'index.html not found' });
+      return res.json({
+        message: 'RSML Speech Annotator API - Development',
+        status: 'running',
+        note: 'Frontend running separately on Vite dev server'
+      });
     }
     
     res.sendFile(indexPath);
