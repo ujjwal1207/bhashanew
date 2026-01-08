@@ -1,8 +1,13 @@
 import axios from 'axios';
 
+// Use environment variable for API base URL
+// In production (Vercel): points to Render backend
+// In development: uses local proxy or localhost
+const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+
 // Create axios instance
 const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

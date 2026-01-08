@@ -21,9 +21,27 @@ const app = express();
 // -------- Middleware -------- //
 
 // CORS Middleware
+const allowedOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : [];
+
 app.use(cors({
-  origin: '*',
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    
+    // If no CORS_ORIGINS set, allow all (development)
+    if (allowedOrigins.length === 0) return callback(null, true);
+    
+    // Check if origin is allowed
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: false,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Body Parser Middleware
