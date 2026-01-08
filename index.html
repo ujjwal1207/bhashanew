@@ -195,7 +195,7 @@
       }
 
       async function loadBatches() {
-        const res = await fetch("/batches");
+        const res = await fetch("/api/batches");
         const { max_batch } = await res.json();
 
         batches = Array.from({ length: max_batch }, (_, i) => i + 1);
@@ -210,12 +210,12 @@
       }
 
       async function loadFiles(batch) {
-        const res = await fetch(`/batch/${batch}/files`);
-        const { max_file } = await res.json();
+        const res = await fetch(`/api/batch/${batch}/files`);
+        const data = await res.json();
 
-        files = Array.from({ length: max_file }, (_, i) => i + 1);
+        files = data.files || [];
         fileSelect.disabled = false;
-        fileSelect.innerHTML = `<option disabled selected>Select File</option>`;
+        fileSelect.innerHTML = `<option disabled selected>Select File (${files.length} available)</option>`;
         files.forEach((f) => {
           const opt = document.createElement("option");
           opt.value = f;
@@ -228,14 +228,21 @@
         const batch = batches[currentBatchIndex];
         const file = files[currentFileIndex];
 
-        const res = await fetch(`/batch/${batch}/file/${file}`);
+        const res = await fetch(`/api/batch/${batch}/file/${file}`);
+        
+        if (!res.ok) {
+          segmentContainer.innerHTML = `<div class="alert alert-warning">No data found for Batch ${batch}, File ${file}. Try another file.</div>`;
+          return;
+        }
+        
         const rows = await res.json();
 
         segmentContainer.innerHTML = "";
 
         rows.forEach((row, idx) => {
+          const verbatim = row.unsanitized_verbatim || "";
           const normalized = row.unsanitized_normalized || "";
-          const transcript = row.rsml || row.unsanitized_verbatim || "";
+          const transcript = row.rsml || verbatim;
           const audioPath = row.audio ? AUDIO_BASE + row.audio : null;
 
           const card = document.createElement("div");
@@ -254,10 +261,6 @@
         <span class="badge border border-black text-black rounded-circle fs-6">
           ${row.segment ?? idx}
         </span>
-      </div>
-
-      <div class="mb-2 text-muted small">
-        <strong>${normalized}</strong>
       </div>
 
       <div class="row mb-2">
@@ -357,7 +360,7 @@
         const toast = new bootstrap.Toast(toastEl);
 
         try {
-          const res = await fetch(`/batch/${batch}/file/${file}/save`, {
+          const res = await fetch(`/api/batch/${batch}/file/${file}/save`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),

@@ -3,8 +3,11 @@ const cors = require('cors');
 const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
+require('dotenv').config();
 const connectDB = require('./config/database');
 const voiceRoutes = require('./routes/voiceRoutes');
+const authRoutes = require('./routes/authRoutes');
+const { protect } = require('./middleware/authMiddleware');
 
 // ---------------- CONFIG ---------------- //
 
@@ -43,19 +46,33 @@ app.use('/data/audio', express.static(AUDIO_DIR));
 
 // -------- Serve Index HTML -------- //
 
-app.get('/', (req, res) => {
-  const indexPath = path.join(__dirname, 'index.html');
+// Serve React app in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'public')));
   
-  if (!fs.existsSync(indexPath)) {
-    return res.status(404).json({ error: 'index.html not found' });
-  }
-  
-  res.sendFile(indexPath);
-});
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+} else {
+  // Serve old index.html in development
+  app.get('/', (req, res) => {
+    const indexPath = path.join(__dirname, 'index.html');
+    
+    if (!fs.existsSync(indexPath)) {
+      return res.status(404).json({ error: 'index.html not found' });
+    }
+    
+    res.sendFile(indexPath);
+  });
+}
 
 // -------- API Routes -------- //
 
-app.use('/api', voiceRoutes);
+// Auth routes (public)
+app.use('/api/auth', authRoutes);
+
+// Voice routes (protected)
+app.use('/api', protect, voiceRoutes);
 
 // -------- Error Handling Middleware -------- //
 

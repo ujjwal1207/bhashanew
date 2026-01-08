@@ -29,7 +29,7 @@ exports.getMaxBatch = async (req, res) => {
 };
 
 /**
- * Get maximum file number for a specific batch
+ * Get list of available files for a specific batch
  * Equivalent to Python's /batch/{batch_id}/files route
  */
 exports.getMaxFile = async (req, res) => {
@@ -42,24 +42,19 @@ exports.getMaxFile = async (req, res) => {
       return res.status(404).json({ error: `Batch ${batch_id} not found` });
     }
 
-    const result = await Voice.aggregate([
-      {
-        $match: { batch: batch_id }
-      },
-      {
-        $group: {
-          _id: null,
-          maxFile: { $max: { $toInt: '$file' } }
-        }
-      }
-    ]);
+    // Get distinct file numbers for this batch
+    const files = await Voice.distinct('file', { batch: batch_id });
 
-    if (!result || result.length === 0 || !result[0].maxFile) {
+    if (!files || files.length === 0) {
       return res.status(404).json({ error: `No files for batch ${batch_id}` });
     }
 
+    // Sort numerically
+    const sortedFiles = files.map(f => parseInt(f)).sort((a, b) => a - b);
+
     res.json({
-      max_file: result[0].maxFile
+      files: sortedFiles,
+      max_file: Math.max(...sortedFiles)
     });
   } catch (error) {
     console.error('Error in getMaxFile:', error);
