@@ -131,6 +131,33 @@ exports.getPendingUsers = async (req, res) => {
 };
 
 /**
+ * Get all users (admin only)
+ */
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+    
+    // Calculate stats
+    const totalUsers = users.length;
+    const activeUsers = users.filter(u => u.isApproved).length;
+    const pendingUsers = users.filter(u => !u.isApproved).length;
+    const adminUsers = users.filter(u => u.role === 'admin').length;
+
+    res.json({ 
+      users,
+      stats: {
+        total: totalUsers,
+        active: activeUsers,
+        pending: pendingUsers,
+        admins: adminUsers
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get users' });
+  }
+};
+
+/**
  * Approve user (admin only)
  */
 exports.approveUser = async (req, res) => {
@@ -176,5 +203,55 @@ exports.rejectUser = async (req, res) => {
     res.json({ message: 'User rejected and removed' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to reject user' });
+  }
+};
+
+/**
+ * Revoke user approval (admin only)
+ */
+exports.revokeUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isApproved: false },
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      message: 'User approval revoked',
+      user
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to revoke user' });
+  }
+};
+
+/**
+ * Delete user (admin only)
+ */
+exports.deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Prevent deleting self
+    if (userId === req.user.id) {
+      return res.status(400).json({ error: 'Cannot delete your own account' });
+    }
+
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete user' });
   }
 };

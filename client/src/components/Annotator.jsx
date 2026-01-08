@@ -207,10 +207,10 @@ function Annotator() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow-1 bg-light py-3">
+      <main className="flex-grow-1 py-3" style={{ backgroundColor: '#f8f9fa' }}>
         <div className="container-fluid">
           {/* Control Panel */}
-          <div className="card mb-3 shadow-sm">
+          <div className="card mb-3 border-0 shadow-sm">
             <div className="card-body py-2">
               <div className="row g-2 align-items-end">
                 <div className="col-md-2">
