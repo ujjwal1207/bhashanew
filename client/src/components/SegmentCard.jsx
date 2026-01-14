@@ -50,58 +50,69 @@ function SegmentCard({ segment, index, onSave }) {
   const transcript = segment.rsml || verbatim;
 
   return (
-    <div className="card mb-4 p-3 segment-card" data-segment={segment.segment}>
-      {/* Segment Header */}
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <span className="badge bg-primary fs-6">
-          Segment {index + 1}
-        </span>
-        <div className="d-flex gap-2 align-items-center">
-          {saveStatus && <span className="text-success small">{saveStatus}</span>}
-          <button 
-            className="btn btn-sm btn-success"
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save'}
-          </button>
+    <div className="card mb-4 shadow-sm border-0 segment-card" data-segment={segment.segment}>
+      <div className="card-body p-4">
+        {/* Segment Header */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <span className="badge bg-primary fs-5 px-4 py-2 rounded-pill">
+            Segment {index + 1}
+          </span>
+          <div className="d-flex gap-3 align-items-center">
+            {saveStatus && <span className="text-success fw-semibold">{saveStatus}</span>}
+            <button 
+              className="btn btn-success px-5 py-2 rounded-pill"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : 'Save'}
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Main Content Row */}
-      <div className="row mb-2">
-        <div className="col-md-6">
-          <label className="form-label small">RSML Editor</label>
-          <textarea
-            ref={textareaRef}
-            className="form-control tag-textarea"
-            rows="5"
-            defaultValue={transcript}
-          />
-        </div>
-        <div className="col-md-6">
-          <label className="form-label small">Preview</label>
-          <div ref={outputRef} className="rendered-transcript card p-2" style={{ minHeight: '120px' }}></div>
-        </div>
-      </div>
-
-      {/* Audio Player */}
-      {segment.audio_path ? (
-        <audio controls preload="metadata" style={{ width: '100%' }}>
-          <source src={segment.audio_path} />
-        </audio>
-      ) : (
-        <div className="text-muted small">⚠️ No audio available</div>
-      )}
-
-      {/* Metadata */}
-      <div className="mt-2 small text-muted">
-        <div className="row">
+        {/* Main Content Row */}
+        <div className="row mb-4 g-4">
           <div className="col-md-6">
-            <strong>Verbatim:</strong> {verbatim.substring(0, 100)}{verbatim.length > 100 ? '...' : ''}
+            <label className="form-label fw-semibold mb-2">RSML Editor</label>
+            <textarea
+              ref={textareaRef}
+              className="form-control tag-textarea"
+              rows="6"
+              defaultValue={transcript}
+              style={{ fontSize: '14px' }}
+            />
           </div>
           <div className="col-md-6">
-            <strong>Normalized:</strong> {normalized.substring(0, 100)}{normalized.length > 100 ? '...' : ''}
+            <label className="form-label fw-semibold mb-2">Preview</label>
+            <div ref={outputRef} className="rendered-transcript card p-3" style={{ minHeight: '140px' }}></div>
+          </div>
+        </div>
+
+        {/* Audio Player */}
+        <div className="mb-4">
+          {segment.audio_path ? (
+            <audio controls preload="metadata" style={{ width: '100%', height: '40px' }}>
+              <source src={segment.audio_path} />
+            </audio>
+          ) : (
+            <div className="alert alert-warning py-2 mb-0">⚠️ No audio available</div>
+          )}
+        </div>
+
+        {/* Metadata */}
+        <div className="mt-3 pt-3 border-top">
+          <div className="row g-3">
+            <div className="col-md-6">
+              <div className="text-muted small">
+                <strong className="d-block mb-1">Verbatim:</strong>
+                <span className="text-secondary">{verbatim.substring(0, 100)}{verbatim.length > 100 ? '...' : ''}</span>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="text-muted small">
+                <strong className="d-block mb-1">Normalized:</strong>
+                <span className="text-secondary">{normalized.substring(0, 100)}{normalized.length > 100 ? '...' : ''}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

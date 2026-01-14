@@ -98,16 +98,24 @@ const AdminPanel = () => {
   }
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="d-flex flex-column min-vh-100 admin-panel">
       {/* Header */}
-      <header className="bg-primary text-white py-3 shadow-sm">
-        <div className="container-fluid">
+      <header className="modern-header border-bottom">
+        <div className="container-fluid py-4">
           <div className="row align-items-center">
             <div className="col">
-              <h4 className="mb-0">RSML Speech Annotator - Admin Panel</h4>
+              <div className="d-flex align-items-center gap-3">
+                <div className="header-icon">
+                  <i className="bi bi-shield-fill-check"></i>
+                </div>
+                <div>
+                  <h3 className="mb-0 fw-bold">Admin Dashboard</h3>
+                  <small className="text-muted">Manage users and permissions</small>
+                </div>
+              </div>
             </div>
             <div className="col-auto">
-              <button className="btn btn-light btn-sm" onClick={() => navigate('/')}>
+              <button className="btn btn-outline-primary rounded-pill px-4" onClick={() => navigate('/')}>
                 Back to Annotator
               </button>
             </div>
@@ -117,71 +125,84 @@ const AdminPanel = () => {
 
       {/* Main Content */}
       <div className="flex-grow-1 p-4" style={{ backgroundColor: '#f8f9fa' }}>
-
-      {/* Filter Tabs */}
-      <div className="mb-3">
-        <button
-          className={`btn me-2 ${filter === 'all' ? 'btn-primary' : 'btn-outline-secondary'}`}
-          onClick={() => setFilter('all')}
-        >
-          All
-        </button>
-        <button
-          className={`btn me-2 ${filter === 'pending' ? 'btn-primary' : 'btn-outline-secondary'}`}
-          onClick={() => setFilter('pending')}
-        >
-          Pending
-        </button>
-        <button
-          className={`btn ${filter === 'approved' ? 'btn-primary' : 'btn-outline-secondary'}`}
-          onClick={() => setFilter('approved')}
-        >
-          Approved
-        </button>
-      </div>
-
-      {/* Refresh Button */}
-      <button
-        className="btn btn-success w-100 mb-4 py-3"
-        onClick={fetchAllUsers}
-      >
-        Refresh
-      </button>
+        <div className="container-fluid">
 
       {/* Stats Cards */}
-      <div className="row g-3 mb-4">
+      <div className="row g-4 mb-4">
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body text-center">
-              <h2 className="display-4 mb-0">{stats.total}</h2>
-              <p className="text-muted mb-0">Total Users</p>
+          <div className="stat-card stat-card-primary">
+            <div className="stat-icon">
+              <i className="bi bi-people-fill"></i>
+            </div>
+            <div className="stat-content">
+              <h2 className="stat-number">{stats.total}</h2>
+              <p className="stat-label">Total Users</p>
             </div>
           </div>
         </div>
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body text-center">
-              <h2 className="display-4 mb-0">{stats.active}</h2>
-              <p className="text-muted mb-0">Active</p>
+          <div className="stat-card stat-card-success">
+            <div className="stat-icon">
+              <i className="bi bi-person-check-fill"></i>
+            </div>
+            <div className="stat-content">
+              <h2 className="stat-number">{stats.active}</h2>
+              <p className="stat-label">Active Users</p>
             </div>
           </div>
         </div>
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body text-center">
-              <h2 className="display-4 mb-0">{stats.pending}</h2>
-              <p className="text-muted mb-0">Waiting Approval</p>
+          <div className="stat-card stat-card-warning">
+            <div className="stat-icon">
+              <i className="bi bi-clock-fill"></i>
+            </div>
+            <div className="stat-content">
+              <h2 className="stat-number">{stats.pending}</h2>
+              <p className="stat-label">Pending Approval</p>
             </div>
           </div>
         </div>
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body text-center">
-              <h2 className="display-4 mb-0">{stats.admins}</h2>
-              <p className="text-muted mb-0">Admins</p>
+          <div className="stat-card stat-card-info">
+            <div className="stat-icon">
+              <i className="bi bi-shield-check"></i>
+            </div>
+            <div className="stat-content">
+              <h2 className="stat-number">{stats.admins}</h2>
+              <p className="stat-label">Administrators</p>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Filter Tabs and Refresh */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex gap-3">
+          <button
+            className={`btn rounded-pill px-4 py-2 ${filter === 'all' ? 'btn-primary' : 'btn-outline-primary'}`}
+            onClick={() => setFilter('all')}
+          >
+            <i className="bi bi-list-ul me-2"></i>All Users
+          </button>
+          <button
+            className={`btn rounded-pill px-4 py-2 ${filter === 'pending' ? 'btn-primary' : 'btn-outline-primary'}`}
+            onClick={() => setFilter('pending')}
+          >
+            <i className="bi bi-hourglass-split me-2"></i>Pending
+          </button>
+          <button
+            className={`btn rounded-pill px-4 py-2 ${filter === 'approved' ? 'btn-primary' : 'btn-outline-primary'}`}
+            onClick={() => setFilter('approved')}
+          >
+            <i className="bi bi-check-circle me-2"></i>Approved
+          </button>
+        </div>
+        <button
+          className="btn btn-success rounded-pill px-4 py-2"
+          onClick={fetchAllUsers}
+        >
+          <i className="bi bi-arrow-clockwise me-2"></i>Refresh
+        </button>
       </div>
 
       {error && (
@@ -191,18 +212,18 @@ const AdminPanel = () => {
       )}
 
       {/* Users Table */}
-      <div className="card border-0 shadow-sm">
+      <div className="card border-0 shadow-sm modern-table-card">
         <div className="card-body p-0">
           <div className="table-responsive">
-            <table className="table table-hover mb-0">
-              <thead className="table-light">
+            <table className="table table-hover mb-0 modern-table">
+              <thead>
                 <tr>
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Email</th>
-                  <th className="px-4 py-3">Role</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Registered</th>
-                  <th className="px-4 py-3">Actions</th>
+                  <th className="px-4 py-4">Name</th>
+                  <th className="px-4 py-4">Email</th>
+                  <th className="px-4 py-4">Role</th>
+                  <th className="px-4 py-4">Status</th>
+                  <th className="px-4 py-4">Registered</th>
+                  <th className="px-4 py-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -215,19 +236,30 @@ const AdminPanel = () => {
                 ) : (
                   filteredUsers.map((u) => (
                     <tr key={u._id}>
-                      <td className="px-4 py-3">{u.fullName}</td>
-                      <td className="px-4 py-3">{u.email}</td>
-                      <td className="px-4 py-3">
-                        <span className="badge bg-primary">{u.role}</span>
+                      <td className="px-4 py-4">
+                        <div className="d-flex align-items-center gap-2">
+                          <div className="user-avatar">
+                            <i className="bi bi-person-fill"></i>
+                          </div>
+                          <span className="fw-semibold">{u.fullName}</span>
+                        </div>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4 text-muted">{u.email}</td>
+                      <td className="px-4 py-4">
+                        <span className="badge rounded-pill bg-primary px-3 py-2">{u.role}</span>
+                      </td>
+                      <td className="px-4 py-4">
                         {u.isApproved ? (
-                          <span className="badge bg-success">Approved</span>
+                          <span className="badge rounded-pill bg-success px-3 py-2">
+                            <i className="bi bi-check-circle me-1"></i>Approved
+                          </span>
                         ) : (
-                          <span className="badge bg-warning text-dark">Pending</span>
+                          <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
+                            <i className="bi bi-hourglass-split me-1"></i>Pending
+                          </span>
                         )}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4 text-muted">
                         {new Date(u.createdAt).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -236,30 +268,30 @@ const AdminPanel = () => {
                           minute: '2-digit'
                         })}
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="d-flex flex-column gap-2" style={{ minWidth: '120px' }}>
+                      <td className="px-4 py-4">
+                        <div className="d-flex gap-3" style={{ minWidth: '200px' }}>
                           {!u.isApproved && (
                             <button
-                              className="btn btn-success btn-sm w-100"
+                              className="btn btn-success btn-sm rounded-pill px-4"
                               onClick={() => handleApprove(u._id)}
                             >
-                              Approve
+                              <i className="bi bi-check-lg me-1"></i>Approve
                             </button>
                           )}
                           {u.isApproved && u.role !== 'admin' && (
                             <button
-                              className="btn btn-warning btn-sm w-100"
+                              className="btn btn-warning btn-sm rounded-pill px-4"
                               onClick={() => handleRevoke(u._id)}
                             >
-                              Revoke
+                              <i className="bi bi-x-lg me-1"></i>Revoke
                             </button>
                           )}
                           {u.role !== 'admin' && (
                             <button
-                              className="btn btn-danger btn-sm w-100"
+                              className="btn btn-danger btn-sm rounded-pill px-4"
                               onClick={() => handleDelete(u._id)}
                             >
-                              Delete
+                              <i className="bi bi-trash me-1"></i>Delete
                             </button>
                           )}
                         </div>
@@ -272,6 +304,7 @@ const AdminPanel = () => {
           </div>
         </div>
       </div>
+        </div>
       </div>
     </div>
   );

@@ -171,35 +171,41 @@ function Annotator() {
   return (
     <div className="d-flex flex-column min-vh-100">
       {/* Header */}
-      <header className="bg-primary text-white py-2 shadow-sm">
-        <div className="container-fluid">
+      <header className="modern-header border-bottom">
+        <div className="container-fluid py-3">
           <div className="row align-items-center">
             <div className="col">
-              <h4 className="mb-0">RSML Speech Annotator</h4>
+              <div className="d-flex align-items-center gap-3">
+                <div className="header-icon">
+                  <i className="bi bi-mic-fill"></i>
+                </div>
+                <div>
+                  <h4 className="mb-0 fw-bold"> Annotator</h4>
+                  <small className="text-muted"> Annotation Tool</small>
+                </div>
+              </div>
             </div>
             <div className="col-auto">
-              <div className="d-flex align-items-center gap-2">
+              <div className="d-flex align-items-center gap-4">
                 <button 
-                  className="btn btn-info btn-sm"
+                  className="btn btn-outline-primary rounded-pill px-4"
                   data-bs-toggle="modal"
                   data-bs-target="#guidelinesModal"
                 >
-                  <i className="bi bi-keyboard"></i> Shortcuts
+                  <i className="bi bi-keyboard me-2"></i>Shortcuts
                 </button>
                 {isAdmin && (
                   <button 
-                    className="btn btn-light btn-sm"
+                    className="btn btn-outline-success rounded-pill px-4"
                     onClick={() => navigate('/admin')}
                   >
-                    Admin Panel
+                    <i className="bi bi-shield-check me-2"></i>Admin Panel
                   </button>
                 )}
-                <button 
-                  className="btn btn-light btn-sm"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
+                <div className="user-profile-btn" onClick={handleLogout} role="button" title="Logout">
+                  <i className="bi bi-person-circle"></i>
+                  <span className="ms-2">{user?.fullName || 'User'}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -207,16 +213,16 @@ function Annotator() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow-1 py-3" style={{ backgroundColor: '#f8f9fa' }}>
+      <main className="flex-grow-1 py-4" style={{ backgroundColor: '#f8f9fa' }}>
         <div className="container-fluid">
           {/* Control Panel */}
-          <div className="card mb-3 border-0 shadow-sm">
-            <div className="card-body py-2">
-              <div className="row g-2 align-items-end">
+          <div className="card mb-4 border-0 shadow-sm">
+            <div className="card-body p-3">
+              <div className="row g-3 align-items-end">
                 <div className="col-md-2">
-                  <label className="form-label mb-1 small">Batch</label>
+                  <label className="form-label mb-2 fw-semibold">Batch</label>
                   <select 
-                    className="form-select form-select-sm"
+                    className="form-select"
                     value={currentBatch}
                     onChange={handleBatchChange}
                   >
@@ -228,9 +234,9 @@ function Annotator() {
                 </div>
                 
                 <div className="col-md-2">
-                  <label className="form-label mb-1 small">File</label>
+                  <label className="form-label mb-2 fw-semibold">File</label>
                   <select 
-                    className="form-select form-select-sm"
+                    className="form-select"
                     value={currentFile}
                     onChange={handleFileChange}
                     disabled={!currentBatch}
@@ -242,9 +248,9 @@ function Annotator() {
                   </select>
                 </div>
                 
-                <div className="col-md-3 d-flex gap-1">
+                <div className="col-md-4 d-flex gap-3">
                   <button 
-                    className="btn btn-outline-secondary btn-sm"
+                    className="btn btn-outline-secondary px-4 rounded-pill"
                     onClick={handlePrev}
                     disabled={!currentFile || files.indexOf(parseInt(currentFile)) === 0}
                     title="Previous File"
@@ -252,14 +258,14 @@ function Annotator() {
                     ← Prev
                   </button>
                   <button 
-                    className="btn btn-primary btn-sm flex-fill"
+                    className="btn btn-primary flex-fill px-5 rounded-pill"
                     onClick={handleLoadSegments}
                     disabled={loading || !currentBatch || !currentFile}
                   >
                     {loading ? 'Loading...' : 'Load'}
                   </button>
                   <button 
-                    className="btn btn-outline-secondary btn-sm"
+                    className="btn btn-outline-secondary px-4 rounded-pill"
                     onClick={handleNext}
                     disabled={!currentFile || files.indexOf(parseInt(currentFile)) === files.length - 1}
                     title="Next File"
@@ -271,7 +277,7 @@ function Annotator() {
                 {segments.length > 0 && (
                   <div className="col-md-2">
                     <button 
-                      className="btn btn-success btn-sm w-100"
+                      className="btn btn-success w-100 py-2 rounded-pill"
                       onClick={handleSaveAll}
                       disabled={loading}
                     >
@@ -293,7 +299,7 @@ function Annotator() {
           {segments.length > 0 && (
             <div className="row">
               <div className="col-12">
-                <div className="d-flex flex-column gap-3">
+                <div className="d-flex flex-column gap-4">
                   {segments.map((segment, index) => (
                     <SegmentCard 
                       key={segment.id}
@@ -309,7 +315,10 @@ function Annotator() {
 
           {segments.length === 0 && !loading && (
             <div className="text-center text-muted py-5">
-              <p>Select a batch and file to load segments</p>
+              <div className="py-5">
+                <i className="bi bi-folder-open" style={{ fontSize: '3rem', opacity: 0.5 }}></i>
+                <p className="mt-3 fs-5">Select a batch and file to load segments</p>
+              </div>
             </div>
           )}
         </div>
