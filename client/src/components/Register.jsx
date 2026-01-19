@@ -63,47 +63,37 @@ const Register = () => {
 
   return (
     <div className="min-vh-100 auth-container">
-      {/* Header */}
-      <header className="modern-header">
-        <div className="container py-4">
-          <div className="d-flex align-items-center gap-3">
-            <div className="header-icon">
-              <i className="bi bi-mic-fill"></i>
-            </div>
-            <h3 className="mb-0 fw-bold">Shoonya</h3>
-          </div>
-        </div>
-      </header>
+      
 
       {/* Main Content */}
-      <div className="flex-grow-1 d-flex align-items-center py-5">
+      <div className="flex-grow-1 d-flex align-items-center py-3">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-md-6 col-lg-5">
-              <div className="auth-card">
-                <div className="text-center mb-4">
-                  <div className="auth-icon mb-3">
+              <div className="auth-card" style={{ padding: '2rem' }}>
+                <div className="text-center mb-3">
+                  <div className="auth-icon mb-2" style={{ fontSize: '3rem' }}>
                     <i className="bi bi-person-plus-fill"></i>
                   </div>
-                  <h2 className="fw-bold mb-2">Create Account</h2>
-                  <p className="text-muted">Join Shoonya annotation platform</p>
+                  <h3 className="fw-bold mb-1">Create Account</h3>
+                  <p className="text-muted small mb-0">Join Shoonya annotation platform</p>
                 </div>
                   
                   {error && (
-                    <div className="alert alert-danger rounded-pill" role="alert">
+                    <div className="alert alert-danger rounded-pill py-2" role="alert">
                       <i className="bi bi-exclamation-circle me-2"></i>{error}
                     </div>
                   )}
 
                   {success && (
-                    <div className="alert alert-success rounded-pill" role="alert">
+                    <div className="alert alert-success rounded-pill py-2" role="alert">
                       <i className="bi bi-check-circle me-2"></i>{success}
                     </div>
                   )}
 
                   <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <label htmlFor="fullName" className="form-label fw-semibold">Full Name</label>
+                    <div className="mb-2">
+                      <label htmlFor="fullName" className="form-label fw-semibold mb-1">Full Name</label>
                       <input
                         type="text"
                         className="form-control modern-input"
@@ -116,8 +106,8 @@ const Register = () => {
                       />
                     </div>
 
-                    <div className="mb-3">
-                      <label htmlFor="email" className="form-label fw-semibold">Email Address</label>
+                    <div className="mb-2">
+                      <label htmlFor="email" className="form-label fw-semibold mb-1">Email Address</label>
                       <input
                         type="email"
                         className="form-control modern-input"
@@ -130,8 +120,8 @@ const Register = () => {
                       />
                     </div>
 
-                    <div className="mb-3">
-                      <label htmlFor="password" className="form-label fw-semibold">Password</label>
+                    <div className="mb-2">
+                      <label htmlFor="password" className="form-label fw-semibold mb-1">Password</label>
                       <input
                         type="password"
                         className="form-control modern-input"
@@ -146,8 +136,8 @@ const Register = () => {
                       <small className="text-muted"><i className="bi bi-info-circle me-1"></i>Minimum 6 characters</small>
                     </div>
 
-                    <div className="mb-4">
-                      <label htmlFor="confirmPassword" className="form-label fw-semibold">Confirm Password</label>
+                    <div className="mb-2">
+                      <label htmlFor="confirmPassword" className="form-label fw-semibold mb-1">Confirm Password</label>
                       <input
                         type="password"
                         className="form-control modern-input"
@@ -162,7 +152,7 @@ const Register = () => {
 
                     <button
                       type="submit"
-                      className="btn btn-primary modern-btn w-100 py-3 mb-3"
+                      className="btn btn-primary modern-btn w-100 py-2 mb-2"
                       disabled={loading}
                     >
                       {loading ? (
@@ -173,8 +163,8 @@ const Register = () => {
                     </button>
                   </form>
 
-                  <div className="text-center mt-4 pt-3 border-top">
-                    <p className="mb-0 text-muted">
+                  <div className="text-center mt-3 pt-2 border-top">
+                    <p className="mb-0 text-muted small">
                       Already have an account? <Link to="/login" className="fw-semibold text-decoration-none">Sign In</Link>
                     </p>
                   </div>

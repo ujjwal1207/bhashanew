@@ -242,8 +242,8 @@ function Annotator() {
                     disabled={!currentBatch}
                   >
                     <option value="">Select File</option>
-                    {files.map(file => (
-                      <option key={file} value={file}>File {file}</option>
+                    {files.map((file, index) => (
+                      <option key={file} value={file}>File {index + 1}</option>
                     ))}
                   </select>
                 </div>
